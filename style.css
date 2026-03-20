@@ -76,7 +76,7 @@ body {
 }
 .dropbtn:hover,
 .navbtn:hover {
-  background: #000000;
+  background: #0026c5;
 }
 /* About — pushed to horizontal center */
 .navbtn.center {
@@ -115,7 +115,7 @@ body {
   transition: background 0.15s;
 }
 .dropdown-content a:hover {
-  background: #000000;
+  background: #0026c5;
 }
 /* ---- Nested dropdown (Foto / Video) ---- */
 .dropdown-nested {
