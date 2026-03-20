@@ -115,7 +115,7 @@ body {
   transition: background 0.15s;
 }
 .dropdown-content a:hover {
-  background: #404869;
+  background: #000000;
 }
 /* ---- Nested dropdown (Foto / Video) ---- */
 .dropdown-nested {
@@ -126,7 +126,7 @@ body {
   position: absolute;
   left: 100%;
   top: 0;
-  background: #2e3349;
+  background: #000000;
   min-width: 130px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
