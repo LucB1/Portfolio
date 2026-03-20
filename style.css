@@ -44,8 +44,9 @@ body {
   display: block;
   text-align: center;
   font-size: clamp(28px, 4vw, 48px);
-  font-weight: bold;
-  color: #ffffff;           /* warm gold/tan — matches screenshot */
+  font-weight: 700;
+  font-family: 'Roboto Mono', monospace;
+  color: #ffffff;
   letter-spacing: 0.04em;
   padding-top: 18px;
   line-height: 1;
