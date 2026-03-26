@@ -6,41 +6,27 @@
   margin: 0;
   padding: 0;
 }
-html {
+html, body {
   height: 100%;
-}
-body {
+  overflow: hidden;
   background: #000;
   font-family: Georgia, 'Times New Roman', serif;
   color: #fff;
-  height: 100%;
-  overflow: hidden;
 }
-/* ---- Hero / full-screen background ---- */
-.hero {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  min-height: 100%;
-  background-image: url('background.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
+
+/* ---- Fixed top bar (title + nav, never moves) ---- */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  text-align: center;
+  padding-top: 10px;
 }
-/* Optional dark overlay so text stays readable */
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.15);
-  pointer-events: none;
-}
+
 /* ---- Site title ---- */
 .site-title {
-  position: relative;
-  z-index: 10;
   display: block;
   text-align: center;
   font-size: clamp(28px, 4vw, 48px);
@@ -48,20 +34,25 @@ body {
   font-family: 'Roboto Mono', monospace;
   color: #ffffff;
   letter-spacing: -0.02em;
-  padding-top: 10px;
   line-height: 1;
   text-shadow: 0 1px 4px rgba(0,0,0,0.6);
 }
+
+.site-title-link {
+  text-decoration: none;
+  display: inline-block;
+}
+
 /* ---- Navigation bar ---- */
 .nav {
   position: relative;
-  z-index: 10;
   display: flex;
   width: 100%;
   align-items: center;
-  margin-top: 6px;          /* small gap below title */
+  margin-top: 6px;
   padding: 0;
 }
+
 /* Shared button base */
 .dropbtn,
 .navbtn {
@@ -98,41 +89,43 @@ body {
   transition: all 250ms;
 }
 .dropbtn:hover,
-.navbtn:hover {
-  color: #e8e8e8;
-}
+.navbtn:hover { color: #e8e8e8; }
 .dropbtn:hover::before,
-.navbtn:hover::before {
-  width: 100%;
+.navbtn:hover::before { width: 100%; }
+
+/* Active page button stays blue */
+.nav-active {
+  color: #e8e8e8 !important;
 }
-/* About — pushed to horizontal center */
+.nav-active::before {
+  width: 100% !important;
+}
+
+/* About — centered */
 .navbtn.center {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 }
-/* Contact — pushed to the far right */
+/* Contact — far right */
 .navbtn.right {
   margin-left: auto;
 }
+
 /* ---- Dropdown (Projecten) ---- */
-.dropdown {
-  position: relative;
-}
+.dropdown { position: relative; }
 .dropdown-content {
   display: none;
   position: absolute;
   top: 100%;
   left: 0;
-  background: #000000;
+  background: #000;
   min-width: 140px;
-  z-index: 100;
+  z-index: 200;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 .dropdown:hover .dropdown-content,
-.dropdown-content.open {
-  display: block;
-}
+.dropdown-content.open { display: block; }
 .dropdown-content a {
   display: block;
   padding: 8px 16px;
@@ -141,31 +134,91 @@ body {
   font-size: clamp(14px, 1.8vw, 26px);
   transition: background 0.15s;
 }
-.dropdown-content a:hover {
-  background: #0026c5;
-}
+.dropdown-content a:hover { background: #0026c5; }
+
 /* ---- Nested dropdown (Foto / Video) ---- */
-.dropdown-nested {
-  position: relative;
-}
+.dropdown-nested { position: relative; }
 .dropdown-nested-content {
   display: none;
   position: absolute;
   left: 100%;
   top: 0;
-  background: #000000;
+  background: #000;
   min-width: 130px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  z-index: 200;
 }
-.dropdown-nested:hover .dropdown-nested-content,
-.dropdown-nested-content.open {
-  display: block;
-}
-.dropdown-nested-content a {
-  font-size: clamp(13px, 1.6vw, 24px);
+.dropdown-nested:hover .dropdown-nested-content { display: block; }
+.dropdown-nested-content a { font-size: clamp(13px, 1.6vw, 24px); }
+
+/* ---- Panels container (fills the whole screen behind topbar) ---- */
+.panels-container {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
 }
 
-.site-title-link {
-  text-decoration: none;
-  display: inline-block;
+/* ---- Individual panel ---- */
+.panel {
+  position: absolute;
+  inset: 0;
+  display: none;
+  background: #000 url('background.jpg') center/cover no-repeat;
 }
+.panel.active { display: block; }
+
+/* Dark overlay inside each panel */
+.panel .hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+
+/* ---- Slide animations ---- */
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes slideOutLeft {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+.panel.slide-in {
+  animation: slideInRight 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.panel.slide-out {
+  animation: slideOutLeft 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  z-index: 1;
+}
+
+/* ---- Per-page background images ---- */
+#panel-over    { background-image: url('background-over.jpg'); }
+#panel-contact { background-image: url('background-contact.jpg'); }
+#panel-foto    { background-image: url('background-foto.jpg'); }
+#panel-video   { background-image: url('background-video.jpg'); }
+
+/* ---- Page content block ---- */
+.page-content {
+  position: absolute;
+  z-index: 10;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(700px, 90vw);
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: clamp(15px, 1.8vw, 22px);
+  line-height: 1.7;
+}
+.page-content h2 {
+  font-family: 'Roboto Mono', monospace;
+  font-size: clamp(22px, 3vw, 40px);
+  margin-bottom: 18px;
+  letter-spacing: -0.02em;
+}
+.page-content p { margin-bottom: 10px; }

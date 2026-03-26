@@ -8,65 +8,124 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="hero">
-    <div class="hero-overlay"></div>
-    <div style="text-align: center;">
-      <a href="/" class="site-title-link">
-        <span class="site-title"><b>Luc Barendse</b></span>
-      </a>
-    </div>
+
+  <!-- ===== FIXED TOP BAR (never moves) ===== -->
+  <div class="topbar">
+    <a href="#" class="site-title-link" onclick="showPanel('home'); return false;">
+      <span class="site-title"><b>Luc Barendse</b></span>
+    </a>
     <nav class="nav">
-      <!-- Projecten dropdown (left) -->
       <div class="dropdown">
-        <button class="dropbtn">Projecten ▾</button>
-        <div class="dropdown-content">
+        <button class="dropbtn" id="dropbtn" data-panel="projecten">Projecten ▾</button>
+        <div class="dropdown-content" id="dropdown-content">
           <div class="dropdown-nested">
-            <a href="/foto">Foto ▾</a>
+            <a href="#" onclick="showPanel('foto'); return false;">Foto ▾</a>
             <div class="dropdown-nested-content">
-              <a href="link1">Project 1</a>
-              <a href="link2">Project 2</a>
+              <a href="#" onclick="showPanel('project1'); return false;">Project 1</a>
+              <a href="#" onclick="showPanel('project2'); return false;">Project 2</a>
             </div>
           </div>
           <div class="dropdown-nested">
-            <a href="/video">Video ▾</a>
+            <a href="#" onclick="showPanel('video'); return false;">Video ▾</a>
             <div class="dropdown-nested-content">
-              <a href="link3">Project 1</a>
-              <a href="link4">Project 2</a>
+              <a href="#" onclick="showPanel('project3'); return false;">Project 1</a>
+              <a href="#" onclick="showPanel('project4'); return false;">Project 2</a>
             </div>
           </div>
         </div>
       </div>
-      <!-- About (center) -->
-      <button class="navbtn center" onclick="window.location.href='/over'">Over</button>
-      <!-- Contact (right) -->
-      <button class="navbtn right" onclick="window.location.href='/contact'">Contact</button>
+      <button class="navbtn center" data-panel="over" onclick="showPanel('over')">Over</button>
+      <button class="navbtn right" data-panel="contact" onclick="showPanel('contact')">Contact</button>
     </nav>
   </div>
+
+  <!-- ===== SLIDING BACKGROUND PANELS (behind the topbar) ===== -->
+  <div class="panels-container">
+
+    <div class="panel active" id="panel-home">
+      <div class="hero-overlay"></div>
+    </div>
+
+    <div class="panel" id="panel-over">
+      <div class="hero-overlay"></div>
+      <div class="hero hero--over"></div>
+      <div class="page-content">
+        <h2>Over mij</h2>
+        <p>Hier komt jouw bio of beschrijving. Vertel iets over jezelf, je werk en je passie voor fotografie en video.</p>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-contact">
+      <div class="hero hero--contact"></div>
+      <div class="hero-overlay"></div>
+      <div class="page-content">
+        <h2>Contact</h2>
+        <p>Neem gerust contact op via:</p>
+        <p>📧 jouw@email.com</p>
+        <p>📷 @jouwinstagram</p>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-foto">
+      <div class="hero hero--foto"></div>
+      <div class="hero-overlay"></div>
+      <div class="page-content">
+        <h2>Foto</h2>
+        <p>Overzicht van alle fotoprojecten.</p>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-video">
+      <div class="hero hero--video"></div>
+      <div class="hero-overlay"></div>
+      <div class="page-content">
+        <h2>Video</h2>
+        <p>Overzicht van alle videoprojecten.</p>
+      </div>
+    </div>
+
+  </div>
+
   <script>
-    const dropbtn = document.querySelector('.dropbtn');
-    const dropdownContent = document.querySelector('.dropdown-content');
+    let current = 'home';
 
-    // Single click on "Projecten" navigates, double click (or check if already open) toggles dropdown
-    dropbtn.addEventListener('click', function (e) {
+    function showPanel(id) {
+      if (id === current) return;
+      const oldPanel = document.getElementById('panel-' + current);
+      const newPanel = document.getElementById('panel-' + id);
+      if (!newPanel) return;
+
+      oldPanel.classList.add('slide-out');
+      newPanel.classList.add('slide-in', 'active');
+
+      oldPanel.addEventListener('animationend', function h() {
+        oldPanel.classList.remove('active', 'slide-out');
+        oldPanel.removeEventListener('animationend', h);
+      });
+      newPanel.addEventListener('animationend', function h() {
+        newPanel.classList.remove('slide-in');
+        newPanel.removeEventListener('animationend', h);
+      });
+
+      current = id;
+      // close dropdown
+      document.getElementById('dropdown-content').classList.remove('open');
+      // highlight active nav button
+      document.querySelectorAll('.dropbtn, .navbtn').forEach(btn => btn.classList.remove('nav-active'));
+      const activeBtn = document.querySelector(`[data-panel="${id}"]`)
+        || (['foto','video','project1','project2','project3','project4'].includes(id) && document.querySelector('[data-panel="projecten"]'));
+      if (activeBtn) activeBtn.classList.add('nav-active');
+    }
+
+    // Dropdown toggle
+    document.getElementById('dropbtn').addEventListener('click', function(e) {
       e.stopPropagation();
-      dropdownContent.classList.toggle('open');
-      window.location.href = '/projecten';
+      document.getElementById('dropdown-content').classList.toggle('open');
     });
 
-    // Clicking Foto/Video navigates directly to their href
-    document.querySelectorAll('.dropdown-nested > a').forEach(function (link) {
-      link.addEventListener('click', function (e) {
-        e.stopPropagation();
-        window.location.href = this.href;
-      });
-    });
-
-    // Close everything when clicking outside
-    document.addEventListener('click', function () {
-      dropdownContent.classList.remove('open');
-      document.querySelectorAll('.dropdown-nested-content').forEach(function (el) {
-        el.classList.remove('open');
-      });
+    document.addEventListener('click', function() {
+      document.getElementById('dropdown-content').classList.remove('open');
+      document.querySelectorAll('.dropdown-nested-content').forEach(el => el.classList.remove('open'));
     });
   </script>
 </body>
