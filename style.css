@@ -22,7 +22,7 @@ html, body {
   right: 0;
   z-index: 100;
   text-align: center;
-  padding-top: 10px;
+  padding: 10px 16px 0 16px;
 }
 
 /* ---- Site title ---- */
@@ -50,7 +50,7 @@ html, body {
   width: 100%;
   align-items: center;
   margin-top: 6px;
-  padding: 0;
+  padding: 0 12px;
 }
 
 /* Shared button base */
@@ -176,20 +176,36 @@ html, body {
   pointer-events: none;
 }
 
-/* ---- Slide animations ---- */
-@keyframes slideInRight {
+/* ---- Slide animations (4 directions) ---- */
+@keyframes slideInFromRight {
   from { transform: translateX(100%); }
   to   { transform: translateX(0); }
 }
-@keyframes slideOutLeft {
+@keyframes slideOutToLeft {
   from { transform: translateX(0); }
   to   { transform: translateX(-100%); }
 }
-.panel.slide-in {
-  animation: slideInRight 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+@keyframes slideInFromLeft {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
 }
-.panel.slide-out {
-  animation: slideOutLeft 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+@keyframes slideOutToRight {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+
+.panel.slide-in-right {
+  animation: slideInFromRight 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.panel.slide-out-left {
+  animation: slideOutToLeft 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  z-index: 1;
+}
+.panel.slide-in-left {
+  animation: slideInFromLeft 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.panel.slide-out-right {
+  animation: slideOutToRight 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   z-index: 1;
 }
 
