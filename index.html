@@ -123,34 +123,24 @@
       height: 100%;
       position: relative;
       overflow: hidden;
+      background: #0a0a0a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .film-slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
       display: block;
       user-select: none;
       -webkit-user-drag: none;
-      transform: scale(1.04);
-      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0.5;
+      transition: opacity 0.5s ease;
     }
-    .film-slide.active img { transform: scale(1); }
-
-    /* Gradient vignette */
-    .film-slide::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(0,0,0,0.35) 0%,
-        transparent 30%,
-        transparent 55%,
-        rgba(0,0,0,0.6) 100%
-      );
-      pointer-events: none;
-    }
+    .film-slide.active img { opacity: 1; }
 
     /* Caption */
     .slide-caption {
@@ -315,7 +305,7 @@
       <div class="page-content">
         <h2>Contact</h2>
         <p>Neem gerust contact op via:</p>
-        <p>📧 jouw@email.com</p>
+        <p>📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="214b4e545661444c40484d0f424e4c">[email&#160;protected]</a></p>
         <p>📷 @jouwinstagram</p>
       </div>
     </div>
@@ -402,11 +392,11 @@
           </div>
           <div class="film-slide">
             <img src="onderweg/09.jpg" alt="Onderweg 09" draggable="false">
-            <span class="slide-caption">08</span>
+            <span class="slide-caption">09</span>
           </div>
           <div class="film-slide">
             <img src="onderweg/10.jpg" alt="Onderweg 10" draggable="false">
-            <span class="slide-caption">08</span>
+            <span class="slide-caption">10</span>
           </div>
 
         </div><!-- /film-strip -->
@@ -423,7 +413,7 @@
 
   </div><!-- /panels-container -->
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // =============================================
     //  PRELOADER
     // =============================================
@@ -600,11 +590,4 @@
       window.addEventListener('mousemove', e => onDragMove(e.clientX));
       window.addEventListener('mouseup',       onDragEnd);
 
-      strip.addEventListener('touchstart', e => onDragStart(e.touches[0].clientX), { passive: true });
-      strip.addEventListener('touchmove',  e => onDragMove(e.touches[0].clientX),  { passive: true });
-      strip.addEventListener('touchend',       onDragEnd);
-
-    })();
-  </script>
-</body>
-</html>
+      strip.addEventListener('touchstart', e => onDragStart(e.touches[0].client
