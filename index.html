@@ -47,54 +47,13 @@
        ONDERWEG — film-strip gallery panel
        ========================================= */
     #panel-project1 {
-      background: #0a0a0a;
+      background: #000; 
       display: none;
       flex-direction: column;
       align-items: stretch;
       justify-content: flex-end;
     }
     #panel-project1.active { display: flex; }
-
-    /* Top title bar */
-    .gallery-header {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 20;
-      padding: 100px 48px 0 48px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      pointer-events: none;
-    }
-    .gallery-title {
-      font-family: 'Roboto Mono', monospace;
-      font-size: clamp(32px, 6vw, 80px);
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: -0.04em;
-      line-height: 1;
-      text-transform: lowercase;
-    }
-    .gallery-meta {
-      font-family: 'Roboto Mono', monospace;
-      font-size: clamp(11px, 1.2vw, 15px);
-      color: rgba(255,255,255,0.35);
-      text-align: right;
-      line-height: 1.5;
-      padding-bottom: 6px;
-    }
-    .gallery-counter {
-      font-family: 'Roboto Mono', monospace;
-      font-size: clamp(11px, 1.2vw, 15px);
-      color: rgba(255,255,255,0.5);
-      letter-spacing: 0.08em;
-    }
-    .gallery-counter .current-num {
-      color: #fff;
-      font-size: clamp(15px, 1.8vw, 22px);
-    }
 
     /* Film-strip wrapper */
     .film-strip-outer {
@@ -123,12 +82,15 @@
       height: 100%;
       position: relative;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .film-slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
+      max-width: 90%;
+      max-height: 70%; /* Reduced to give space for top buttons */
+      margin-top: 60px; /* Pushes image down away from top bar */
+      object-fit: contain;
       display: block;
       user-select: none;
       -webkit-user-drag: none;
@@ -136,21 +98,6 @@
       transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .film-slide.active img { transform: scale(1); }
-
-    /* Gradient vignette */
-    .film-slide::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(0,0,0,0.35) 0%,
-        transparent 30%,
-        transparent 55%,
-        rgba(0,0,0,0.6) 100%
-      );
-      pointer-events: none;
-    }
 
     /* Caption */
     .slide-caption {
@@ -175,15 +122,15 @@
     /* Nav arrows */
     .strip-nav {
       position: absolute;
-      bottom: 0;
+      top: 55%; /* Centered relative to shifted image */
       left: 0;
       right: 0;
+      transform: translateY(-50%);
       z-index: 30;
       display: flex;
       align-items: center;
-      justify-content: flex-end;
-      padding: 0 48px 32px 48px;
-      gap: 10px;
+      justify-content: space-between;
+      padding: 0 24px;
       pointer-events: none;
     }
     .strip-btn {
@@ -191,14 +138,14 @@
       background: rgba(255,255,255,0.07);
       border: 1px solid rgba(255,255,255,0.15);
       color: #fff;
-      width: 48px;
-      height: 48px;
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 20px;
       transition: background 220ms, border-color 220ms, transform 150ms;
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
@@ -207,12 +154,11 @@
     .strip-btn:hover {
       background: #0026c5;
       border-color: #0026c5;
-      transform: scale(1.08);
+      transform: scale(1.1);
     }
     .strip-btn:active { transform: scale(0.95); }
     .strip-btn:disabled {
-      opacity: 0.2;
-      cursor: default;
+      opacity: 0;
       pointer-events: none;
     }
 
@@ -243,7 +189,6 @@
 </head>
 <body>
 
-  <!-- ===== PRELOADER ===== -->
   <div id="preloader">
     <div class="preloader-name"><b>Luc Barendse</b></div>
     <div class="preloader-bar-wrap">
@@ -251,7 +196,6 @@
     </div>
   </div>
 
-  <!-- ===== FIXED TOP BAR ===== -->
   <div class="topbar">
     <a href="#" class="site-title-link" onclick="showPanel('home'); return false;">
       <span class="site-title"><b>Luc Barendse</b></span>
@@ -281,7 +225,6 @@
     </nav>
   </div>
 
-  <!-- ===== PANELS ===== -->
   <div class="panels-container">
 
     <div class="panel active" id="panel-home">
@@ -341,32 +284,10 @@
       </div>
     </div>
 
-    <!-- ===== ONDERWEG GALLERY PANEL ===== -->
     <div class="panel" id="panel-project1">
-
-      <div class="gallery-header">
-        <div class="gallery-title">onderweg</div>
-        <div class="gallery-meta">
-          <div class="gallery-counter">
-            <span class="current-num" id="gallery-current">1</span>
-            <span> / </span>
-            <span id="gallery-total">8</span>
-          </div>
-          fotografie — luc barendse
-        </div>
-      </div>
 
       <div class="film-strip-outer" id="film-strip-outer">
         <div class="film-strip" id="film-strip">
-
-          <!--
-            HOW TO ADD / CHANGE PHOTOS:
-            • Put your images in a folder called "onderweg/" next to index.html
-            • Name them 01.jpg, 02.jpg … or change the src to whatever name you use
-            • Add or remove <div class="film-slide"> blocks as needed
-            • Update the number in id="gallery-total" to match
-            • Optionally change the text in <span class="slide-caption"> to a location/title
-          -->
 
           <div class="film-slide active">
             <img src="onderweg/01.jpg" alt="Onderweg 01" draggable="false">
@@ -409,9 +330,7 @@
             <span class="slide-caption">10</span>
           </div>
 
-        </div><!-- /film-strip -->
-
-        <div class="strip-dots" id="strip-dots"></div>
+        </div><div class="strip-dots" id="strip-dots"></div>
 
         <div class="strip-nav">
           <button class="strip-btn" id="btn-prev" aria-label="Vorige foto" disabled>&#8592;</button>
@@ -419,11 +338,7 @@
         </div>
       </div>
 
-    </div><!-- /panel-project1 -->
-
-  </div><!-- /panels-container -->
-
-  <script>
+    </div></div><script>
     // =============================================
     //  PRELOADER
     // =============================================
@@ -524,17 +439,11 @@
       const slides    = Array.from(strip.querySelectorAll('.film-slide'));
       const btnPrev   = document.getElementById('btn-prev');
       const btnNext   = document.getElementById('btn-next');
-      const elCurrent = document.getElementById('gallery-current');
-      const elTotal   = document.getElementById('gallery-total');
       const dotsWrap  = document.getElementById('strip-dots');
 
       const total = slides.length;
       let index = 0;
 
-      // Sync total count with actual number of slides
-      elTotal.textContent = total;
-
-      // Build dots
       const dots = slides.map((_, i) => {
         const d = document.createElement('div');
         d.className = 'strip-dot' + (i === 0 ? ' active' : '');
@@ -555,7 +464,6 @@
         dots[index].classList.add('active');
 
         strip.style.transform = `translateX(-${index * 100}%)`;
-        elCurrent.textContent  = index + 1;
 
         btnPrev.disabled = index === 0;
         btnNext.disabled = index === total - 1;
@@ -564,14 +472,12 @@
       btnPrev.addEventListener('click', () => goTo(index - 1));
       btnNext.addEventListener('click', () => goTo(index + 1));
 
-      // Keyboard — only active when on this panel
       document.addEventListener('keydown', (e) => {
         if (current !== 'project1') return;
         if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(index + 1);
         if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(index - 1);
       });
 
-      // Drag / swipe
       let dragStart  = null;
       let dragOffset = 0;
       const THRESHOLD = 60;
