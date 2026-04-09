@@ -6,8 +6,56 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
   <title>Luc Barendse</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ---- Preloader overlay ---- */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      transition: opacity 0.6s ease;
+    }
+    #preloader.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .preloader-name {
+      font-family: 'Roboto Mono', monospace;
+      font-size: clamp(20px, 3vw, 36px);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .preloader-bar-wrap {
+      width: min(260px, 60vw);
+      height: 3px;
+      background: #222;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .preloader-bar {
+      height: 100%;
+      width: 0%;
+      background: #0026c5;
+      border-radius: 2px;
+      transition: width 0.25s ease;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- ===== PRELOADER ===== -->
+  <div id="preloader">
+    <div class="preloader-name"><b>Luc Barendse</b></div>
+    <div class="preloader-bar-wrap">
+      <div class="preloader-bar" id="preloader-bar"></div>
+    </div>
+  </div>
 
   <!-- ===== FIXED TOP BAR (never moves) ===== -->
   <div class="topbar">
@@ -99,7 +147,42 @@
   </div>
 
   <script>
-    // Nav order: left → right. Sub-pages inherit their parent's position.
+    // ===== PRELOADER =====
+    const IMAGES_TO_PRELOAD = [
+      'background.jpg',
+      'background-over.jpg',
+      'background-contact.jpg',
+      'background-foto.jpg',
+      'background-video.jpg'
+    ];
+
+    function preloadImages(urls) {
+      const bar = document.getElementById('preloader-bar');
+      let loaded = 0;
+      const total = urls.length;
+
+      return new Promise((resolve) => {
+        if (total === 0) { resolve(); return; }
+
+        urls.forEach((url) => {
+          const img = new Image();
+          img.onload = img.onerror = () => {
+            loaded++;
+            bar.style.width = (loaded / total * 100) + '%';
+            if (loaded === total) resolve();
+          };
+          img.src = url;
+        });
+      });
+    }
+
+    preloadImages(IMAGES_TO_PRELOAD).then(() => {
+      const preloader = document.getElementById('preloader');
+      preloader.classList.add('fade-out');
+      preloader.addEventListener('transitionend', () => preloader.remove(), { once: true });
+    });
+
+    // ===== NAV / PANELS =====
     const PAGE_ORDER = {
       home:      0,
       projecten: 1,
@@ -121,11 +204,8 @@
       const newPanel = document.getElementById('panel-' + id);
       if (!newPanel) return;
 
-      // Determine direction: going right → new page slides in from right
-      //                       going left  → new page slides in from left
       const goingRight = (PAGE_ORDER[id] ?? 99) > (PAGE_ORDER[current] ?? 0);
 
-      // Apply direction classes
       oldPanel.classList.add(goingRight ? 'slide-out-left' : 'slide-out-right');
       newPanel.classList.add(goingRight ? 'slide-in-right' : 'slide-in-left', 'active');
 
@@ -139,16 +219,13 @@
       });
 
       current = id;
-      // close dropdown
       document.getElementById('dropdown-content').classList.remove('open');
-      // highlight active nav button
       document.querySelectorAll('.dropbtn, .navbtn').forEach(btn => btn.classList.remove('nav-active'));
       const activeBtn = document.querySelector(`[data-panel="${id}"]`)
         || (['foto','video','project1','project2','project3','project4','projecten'].includes(id) && document.querySelector('[data-panel="projecten"]'));
       if (activeBtn) activeBtn.classList.add('nav-active');
     }
 
-    // Dropdown toggle on click — also navigate to projecten
     document.getElementById('dropbtn').addEventListener('click', function(e) {
       e.stopPropagation();
       showPanel('projecten');
